@@ -9,10 +9,13 @@ def index(request):
     num_instances_available = BookInstance.objects.filter(status__exact='a').count()
     num_author = Author.objects.count()
 
+    num_visits = request.session.get('num_visits', 0)
+    request.session['num_visits'] = num_visits + 1
+
     return render(
         request,
         'index.html',
-        context={'num_books':num_books, 'num_instances': num_instances, 'num_instances_available': num_instances_available, 'num_author': num_author},
+        context={'num_books':num_books, 'num_instances': num_instances, 'num_instances_available': num_instances_available, 'num_author': num_author, 'num_visits': num_visits},
     )
 
 class BookListView(generic.ListView):
@@ -33,3 +36,4 @@ class AuthorListView(generic.ListView):
 
 class AuthorDetailView(generic.DetailView):
     model = Author
+    paginate_by = 10
